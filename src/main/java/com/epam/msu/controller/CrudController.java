@@ -3,34 +3,47 @@ package com.epam.msu.controller;
 import com.epam.msu.entity.Certificate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
+@RequestMapping("/certificates")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CrudController {
 
-    private static Certificate certificate = new Certificate();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    static{
-        certificate.setId(11);
-        certificate.setName("name");
-        certificate.setDescription("description");
-    }
-
-    @GetMapping("/")
+    @GetMapping
     public String  mainRest() throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(certificate);
+        List<Certificate> certificates = new ArrayList<>();
+        Certificate firstCertificate = new Certificate();
+        firstCertificate.setId(1);
+        firstCertificate.setName("first certificate");
+        firstCertificate.setDescription("first certificate description");
+        Certificate secondCertificate = new Certificate();
+        secondCertificate.setId(2);
+        secondCertificate.setName("second certificate");
+        secondCertificate.setDescription("Second description");
+        certificates.add(firstCertificate);
+        certificates.add(secondCertificate);
+        return objectMapper.writeValueAsString(certificates);
     }
 
-    @PutMapping("/add")
-    public String addNewCertificate(@RequestParam String name,
-                                    @RequestParam String description){
-        return "main";
+    @GetMapping("{id}")
+    public String getCertificateById(@PathVariable String id) throws JsonProcessingException {
+        return "mads";
+    }
+
+    @PostMapping()
+    public String addNewCertificate() throws JsonProcessingException {
+        return "mads";
+    }
+
+    @PutMapping("{id}")
+    public String updateCertificate(@PathVariable String id) throws JsonProcessingException {
+        return "mads";
     }
 
 }
