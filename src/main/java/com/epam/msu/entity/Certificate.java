@@ -1,6 +1,6 @@
 package com.epam.msu.entity;
 
-import java.util.Calendar;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 
@@ -10,19 +10,19 @@ public class Certificate {
     private String name;
     private String description;
     private long price;
-    private Calendar date;
-    private Calendar createDate;
-    private Calendar lastUpdateDate;
+    private Timestamp duration;
+    private Timestamp createDate;
+    private Timestamp lastUpdateDate;
 
     public Certificate() {
     }
 
-    public Certificate(long id, String name, String description, long price, Calendar date, Calendar createDate, Calendar lastUpdateDate) {
+    public Certificate(long id, String name, String description, long price, Timestamp duration, Timestamp createDate, Timestamp lastUpdateDate) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.date = date;
+        this.duration = duration;
         this.createDate = createDate;
         this.lastUpdateDate = lastUpdateDate;
     }
@@ -59,27 +59,27 @@ public class Certificate {
         this.price = price;
     }
 
-    public Calendar getDate() {
-        return date;
+    public Timestamp getDuration() {
+        return duration;
     }
 
-    public void setDate(Calendar date) {
-        this.date = date;
+    public void setDuration(Timestamp duration) {
+        this.duration = duration;
     }
 
-    public Calendar getCreateDate() {
+    public Timestamp getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Calendar createDate) {
+    public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
     }
 
-    public Calendar getLastUpdateDate() {
+    public Timestamp getLastUpdateDate() {
         return lastUpdateDate;
     }
 
-    public void setLastUpdateDate(Calendar lastUpdateDate) {
+    public void setLastUpdateDate(Timestamp lastUpdateDate) {
         this.lastUpdateDate = lastUpdateDate;
     }
 
@@ -88,12 +88,12 @@ public class Certificate {
         if (this == o) return true;
         if (!(o instanceof Certificate)) return false;
         Certificate that = (Certificate) o;
-        return getId() == that.getId() && getPrice() == that.getPrice() && getName().equals(that.getName()) && getDescription().equals(that.getDescription()) && getDate().equals(that.getDate()) && getCreateDate().equals(that.getCreateDate()) && getLastUpdateDate().equals(that.getLastUpdateDate());
+        return getId() == that.getId() && getPrice() == that.getPrice() && getName().equals(that.getName()) && getDescription().equals(that.getDescription()) && getDuration().equals(that.getDuration()) && getCreateDate().equals(that.getCreateDate()) && getLastUpdateDate().equals(that.getLastUpdateDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getDescription(), getPrice(), getDate(), getCreateDate(), getLastUpdateDate());
+        return Objects.hash(getId(), getName(), getDescription(), getPrice(), getDuration(), getCreateDate(), getLastUpdateDate());
     }
 
     @Override
@@ -103,7 +103,7 @@ public class Certificate {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
-                ", date=" + date +
+                ", duration=" + duration +
                 ", createDate=" + createDate +
                 ", lastUpdateDate=" + lastUpdateDate +
                 '}';
