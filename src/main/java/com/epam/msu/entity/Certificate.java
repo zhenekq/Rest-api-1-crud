@@ -4,20 +4,23 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 
+
 public class Certificate {
 
+    //LocalDateTime
     private long id;
     private String name;
     private String description;
     private long price;
-    private Timestamp duration;
+    private int duration;
     private Timestamp createDate;
     private Timestamp lastUpdateDate;
+    private Tag tag;
 
     public Certificate() {
     }
 
-    public Certificate(long id, String name, String description, long price, Timestamp duration, Timestamp createDate, Timestamp lastUpdateDate) {
+    public Certificate(long id, String name, String description, long price, int duration, Timestamp createDate, Timestamp lastUpdateDate, Tag tag) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -25,6 +28,7 @@ public class Certificate {
         this.duration = duration;
         this.createDate = createDate;
         this.lastUpdateDate = lastUpdateDate;
+        this.tag = tag;
     }
 
     public long getId() {
@@ -59,11 +63,11 @@ public class Certificate {
         this.price = price;
     }
 
-    public Timestamp getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(Timestamp duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 
@@ -83,17 +87,25 @@ public class Certificate {
         this.lastUpdateDate = lastUpdateDate;
     }
 
+    public Tag getTag() {
+        return tag;
+    }
+
+    public void setTag(Tag tag) {
+        this.tag = tag;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Certificate)) return false;
         Certificate that = (Certificate) o;
-        return getId() == that.getId() && getPrice() == that.getPrice() && getName().equals(that.getName()) && getDescription().equals(that.getDescription()) && getDuration().equals(that.getDuration()) && getCreateDate().equals(that.getCreateDate()) && getLastUpdateDate().equals(that.getLastUpdateDate());
+        return getId() == that.getId() && getPrice() == that.getPrice() && getDuration() == that.getDuration() && getName().equals(that.getName()) && getDescription().equals(that.getDescription()) && getCreateDate().equals(that.getCreateDate()) && getLastUpdateDate().equals(that.getLastUpdateDate()) && getTag().equals(that.getTag());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getDescription(), getPrice(), getDuration(), getCreateDate(), getLastUpdateDate());
+        return Objects.hash(getId(), getName(), getDescription(), getPrice(), getDuration(), getCreateDate(), getLastUpdateDate(), getTag());
     }
 
     @Override
@@ -106,6 +118,7 @@ public class Certificate {
                 ", duration=" + duration +
                 ", createDate=" + createDate +
                 ", lastUpdateDate=" + lastUpdateDate +
+                ", tag=" + tag +
                 '}';
     }
 }
