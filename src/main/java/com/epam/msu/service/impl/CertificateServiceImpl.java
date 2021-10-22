@@ -25,7 +25,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public List<Certificate> getAllCertificates() {
         List<Certificate> certificateList = certificateDao.getAllCertificates();
-        for(Certificate certificate: certificateList){
+        for (Certificate certificate : certificateList) {
             Tag tag = tagDao.getTagByCertificateId((int) certificate.getId());
             certificate.setTag(tag);
         }
@@ -34,14 +34,14 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public Certificate getCertificateById(int id) {
-        if (id >= 0) {
-            Certificate certificate = certificateDao.getCertificateById(id);
-            Tag certificateTag = tagDao.getTagByCertificateId((int)certificate.getId());
+        Certificate certificate = certificateDao.getCertificateById(id);
+        if(certificate != null) {
+            Tag certificateTag = tagDao.getTagByCertificateId((int) certificate.getId());
             certificate.setTag(certificateTag);
             return certificate;
         }
         return null;
-    }
+}
 
     @Override
     public void createNewCertificate(Certificate certificate) {
@@ -80,8 +80,8 @@ public class CertificateServiceImpl implements CertificateService {
     public void deleteCertificateById(int certificateId) {
         Tag tag = tagDao.getTagByCertificateId(certificateId);
         certificateDao.deleteCertificateById(certificateId);
-        int tagId = (int)tag.getId();
-        certificateDao.deleteFromIntermediateTableByCertificateAndTagId(certificateId,tagId);
+        int tagId = (int) tag.getId();
+        certificateDao.deleteFromIntermediateTableByCertificateAndTagId(certificateId, tagId);
     }
 
     @Override
@@ -90,6 +90,7 @@ public class CertificateServiceImpl implements CertificateService {
         Tag tag = tagDao.getTagByTagName(tagName);
         int tagId = (int) tag.getId();
         certificates = certificateDao.getCertificatesByTagId(tagId);
+        certificates.forEach((p) -> p.setTag(tag));
         return certificates;
     }
 }

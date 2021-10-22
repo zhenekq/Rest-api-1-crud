@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public class Certificate {
 
+    //MapStruct
     //LocalDateTime
     private long id;
     private String name;

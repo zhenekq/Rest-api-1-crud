@@ -3,6 +3,7 @@ package com.epam.msu.entity;
 import java.util.Objects;
 
 public class Tag {
+
     private long id;
     private String name;
 

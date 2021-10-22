@@ -1,5 +1,6 @@
 package com.epam.msu.config;
 
+import com.epam.msu.util.DatabaseProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -57,9 +58,10 @@ public class SpringConfig implements WebMvcConfigurer {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://localhost:3306/rest-crud-1");
-        dataSource.setUsername("admin_zhenekns");
-        dataSource.setPassword("em50475047");
-
+        //parameters
+        dataSource.setUsername(DatabaseProperties.dbUsername);
+        dataSource.setPassword(DatabaseProperties.dbPassword);
+        //parameters
         return dataSource;
     }
 

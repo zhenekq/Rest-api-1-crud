@@ -1,20 +1,24 @@
 package com.epam.msu.controller;
 
 import com.epam.msu.entity.Certificate;
+import com.epam.msu.entity.Response;
 import com.epam.msu.exception.CertificateNotFoundException;
 import com.epam.msu.service.impl.CertificateServiceImpl;
+import com.epam.msu.util.DatabaseProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/certificates")
@@ -30,31 +34,38 @@ public class CrudController {
 
 
     @GetMapping
-    public String mainRest(@RequestParam(required = false) String tag) throws JsonProcessingException {
+    public ResponseEntity<List<Certificate>> mainRest(@RequestParam(required = false) String tag) throws JsonProcessingException {
+
+        System.out.println(DatabaseProperties.dbPassword);
+        System.out.println(DatabaseProperties.dbUsername);
+        List<Certificate> certificates = null;
         if (tag == null) {
-            List<Certificate> certificates = certificateService.getAllCertificates();
-            LocalDateTime localDateTime = LocalDateTime.now();
+            certificates = certificateService.getAllCertificates();
+            /*LocalDateTime localDateTime = LocalDateTime.now();
             Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
             System.out.println("WITHOUT TO STRING: " + instant);
-            System.out.println("WITH TO STRING: " + instant.toString());
-            return objectMapper.writeValueAsString(certificates);
+            System.out.println("WITH TO STRING: " + instant.toString());*/
+            return new ResponseEntity<List<Certificate>>(certificates, HttpStatus.OK);
         }
-        return objectMapper.writeValueAsString(certificateService.getAllCertificatesByTagName(tag));
+        certificates = certificateService.getAllCertificatesByTagName(tag);
+        return new ResponseEntity<List<Certificate>>(certificates, HttpStatus.OK);
     }
 
-
-    @GetMapping("{id}")
-    public ResponseEntity getCertificateById(@PathVariable String id) throws JsonProcessingException {
-        int certificateId = Integer.parseInt(id);
-        Certificate certificate = null;
-        try{
-            certificate = certificateService.getCertificateById(certificateId);
-        }catch (CertificateNotFoundException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
+    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getCertificateById(@PathVariable int id) throws CertificateNotFoundException {
+        Certificate certificate = certificateService.getCertificateById(id);
+        if (certificate != null) {
+            return new ResponseEntity<Certificate>(certificate, HttpStatus.OK);
+        } else {
+            throw new CertificateNotFoundException("Requested certificate not found (id = " + id + ")");
         }
-        return new ResponseEntity<Certificate>(certificate, HttpStatus.OK);
     }
+
+    @ExceptionHandler(CertificateNotFoundException.class)
+    public Response handleException(CertificateNotFoundException e) {
+        return new Response(e.getMessage());
+    }
+
 
     @PostMapping
     public ResponseEntity<?> addNewCertificate(@RequestBody Certificate certificate) throws JsonProcessingException {
@@ -63,19 +74,19 @@ public class CrudController {
     }
 
     @PatchMapping("{id}")
-    public String updateCertificate(@RequestBody Certificate certificate, @PathVariable String id) throws JsonProcessingException {
+    public ResponseEntity<Certificate> updateCertificate(@RequestBody Certificate certificate, @PathVariable String id) throws JsonProcessingException {
         int certificateId = Integer.parseInt(id);
         certificate.setId(certificateId);
         certificateService.updateCertificateById(certificate, certificateId);
-        return objectMapper.writeValueAsString(certificate);
+        return new ResponseEntity<Certificate>(certificate, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
-    public String deleteCertificate(@PathVariable String id) throws JsonProcessingException {
+    public ResponseEntity<Certificate> deleteCertificate(@PathVariable String id) throws JsonProcessingException {
         int certificateId = Integer.parseInt(id);
         Certificate certificate = certificateService.getCertificateById(certificateId);
         certificateService.deleteCertificateById(certificateId);
-        return "DELETED: \n" + objectMapper.writeValueAsString(certificate);
+        return ResponseEntity.status(200).body(certificate);
     }
 
 }
