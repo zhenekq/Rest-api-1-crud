@@ -29,14 +29,14 @@ public class CertificateDaoImpl implements CertificateDao {
 
     @Override
     public List<Certificate> getCertificatesByTagId(int tagId) {
-        return jdbcTemplate.query("select id, name, description, price, duration, create_date, last_update_date from certificate join certificate_tag on certificate_tag.certificate_id = certificate.id where tag_id = ?",
+        return jdbcTemplate.query(SqlRequest.getCertificateByTagId,
                 new Object[]{tagId}, new BeanPropertyRowMapper<>(Certificate.class));
     }
 
     @Override
     public Certificate getCertificateById(int id) {
         return jdbcTemplate.query(SqlRequest.getCertificateById,
-                        new Object[]{id}, new CertificateMapper())
+                        new Object[]{id}, new BeanPropertyRowMapper<>(Certificate.class))
                 .stream()
                 .findAny()
                 .orElse(null);
@@ -44,7 +44,7 @@ public class CertificateDaoImpl implements CertificateDao {
 
     @Override
     public Certificate createNewCertificate(Certificate certificate) {
-        jdbcTemplate.update("INSERT INTO certificate (name, description, price, duration, create_date, last_update_date) VALUES (?,?,?,?,?,?)",
+        jdbcTemplate.update(SqlRequest.createNewCertificate,
                 certificate.getName(), certificate.getDescription(),
                 certificate.getPrice(), certificate.getDuration(),
                 certificate.getCreateDate(), certificate.getLastUpdateDate());
@@ -54,7 +54,7 @@ public class CertificateDaoImpl implements CertificateDao {
 
     @Override
     public void updateCertificateById(Certificate certificate, int certificateId) {
-        jdbcTemplate.update("UPDATE certificate set name=?, description=?, price=?,duration=?,create_date=?,last_update_date=? where id = ?",
+        jdbcTemplate.update(SqlRequest.updateCertificateById,
                 certificate.getName(), certificate.getDescription(),
                 certificate.getPrice(), certificate.getDuration(),
                 certificate.getCreateDate(), certificate.getLastUpdateDate(), certificateId);
@@ -62,23 +62,23 @@ public class CertificateDaoImpl implements CertificateDao {
 
     @Override
     public void deleteCertificateById(int certificateId) {
-        jdbcTemplate.update("DELETE FROM certificate where id = ?", certificateId);
+        jdbcTemplate.update(SqlRequest.deleteCertificateById, certificateId);
     }
 
     @Override
     public void deleteFromIntermediateTableByCertificateAndTagId(int certificateId, int tagId) {
-        jdbcTemplate.update("DELETE FROM certificate_tag where certificate_id=? and tag_id=?",certificateId, tagId);
+        jdbcTemplate.update(SqlRequest.deleteFromIntermediateTable,certificateId, tagId);
     }
 
     @Override
     public void addInIntermediateTable(int certificateId, int tagId) {
-        jdbcTemplate.update("INSERT INTO certificate_tag (certificate_id, tag_id) VALUES (?, ?)",
+        jdbcTemplate.update(SqlRequest.addIntermediateTable,
                 certificateId, tagId);
     }
 
 
     private Certificate getLastAddedCertificate(){
-        return jdbcTemplate.query("SELECT * FROM certificate order by id desc limit 1", new Object[]{}, new CertificateMapper())
+        return jdbcTemplate.query(SqlRequest.getLastAddedCertificate, new Object[]{}, new CertificateMapper())
                 .stream()
                 .findAny()
                 .orElse(null);
