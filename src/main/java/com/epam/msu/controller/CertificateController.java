@@ -70,10 +70,9 @@ public class CertificateController {
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<CertificateDto> updateCertificate(@RequestBody CertificateDto certificateDto, @PathVariable String id) throws JsonProcessingException {
-        int certificateId = Integer.parseInt(id);
-        certificateDto.setId(certificateId);
-        certificateService.updateCertificateById(certificateDto, certificateId);
+    public ResponseEntity<CertificateDto> updateCertificate(@RequestBody CertificateDto certificateDto, @PathVariable int id) throws JsonProcessingException {
+        certificateDto.setId(id);
+        certificateService.updateCertificateById(certificateDto, id);
         return new ResponseEntity<CertificateDto>(certificateDto, HttpStatus.OK);
     }
 
